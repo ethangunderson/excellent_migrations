@@ -64,6 +64,15 @@ defmodule ExcellentMigrations.AstParserTest do
     assert [check_constraint_added: 1] == AstParser.parse(ast)
   end
 
+  test "allows check constraint added if using valdiate: false" do
+    ast =
+      string_to_ast(~s"""
+      create constraint("dumplings", :price_must_be_positive, check: "price > 0", validate: false)
+      """)
+
+    assert [] = AstParser.parse(ast)
+  end
+
   test "detects records modified" do
     ast1 =
       string_to_ast("""

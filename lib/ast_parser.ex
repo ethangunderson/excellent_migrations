@@ -147,8 +147,11 @@ defmodule ExcellentMigrations.AstParser do
 
   def detect_json_column_added(_), do: []
 
-  def detect_check_constraint({:create, location, [{:constraint, _, _}]}) do
-    [{:check_constraint_added, Keyword.get(location, :line)}]
+  def detect_check_constraint({:create, location, [{:constraint, _, [_, _, options]}]}) do
+    case Keyword.get(options, :validate) do
+      false -> []
+      _ -> [{:check_constraint_added, Keyword.get(location, :line)}]
+    end
   end
 
   def detect_check_constraint(_), do: []
